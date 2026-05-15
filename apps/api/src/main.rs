@@ -12,6 +12,7 @@
 mod auth;
 mod config;
 mod error;
+mod news;
 mod notes;
 mod state;
 
@@ -47,6 +48,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/health", get(health))
         .merge(auth::router())
         .merge(notes::router())
+        .merge(news::router())
         .with_state(state)
         .layer(TraceLayer::new_for_http());
 
