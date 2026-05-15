@@ -101,7 +101,7 @@ happening, measured honestly, so you can decide for yourself.
 
 ## Architecture
 
-![Sextant architecture](./docs/architecture.png)
+![Sextant architecture](./apps/api/docs/architecture.png)
 
 **Reading the diagram, top to bottom:**
 
