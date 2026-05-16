@@ -1,6 +1,6 @@
 <div align="center">
 
-# Sextant
+# Argus
 
 **Navigation tools for crypto markets — read the signals, decide for yourself.**
 
@@ -18,10 +18,10 @@ _A thinking tool, not a prediction tool._
 
 ## Table of Contents
 
-- [What is Sextant?](#what-is-sextant)
-- [Why "Sextant"?](#why-sextant)
+- [What is Argus?](#what-is-Argus)
+- [Why "Argus"?](#why-Argus)
 - [The honest position on predictions](#the-honest-position-on-predictions)
-- [What Sextant actually does](#what-sextant-actually-does)
+- [What Argus actually does](#what-Argus-actually-does)
 - [Architecture](#architecture)
 - [Tech stack](#tech-stack)
 - [Quick start](#quick-start)
@@ -36,9 +36,9 @@ _A thinking tool, not a prediction tool._
 
 ---
 
-## What is Sextant?
+## What is Argus?
 
-Sextant is an open, self-hostable **crypto market dashboard** that helps you understand
+Argus is an open, self-hostable **crypto market dashboard** that helps you understand
 what's happening in the market — without pretending to know what happens next.
 
 It aggregates news from major crypto sources, overlays news events on live price charts,
@@ -52,15 +52,15 @@ of what's happening, served fast and clean.
 
 ---
 
-## Why "Sextant"?
+## Why "Argus"?
 
-A sextant is the navigation instrument sailors used for centuries to figure out where they
+A Argus is the navigation instrument sailors used for centuries to figure out where they
 were on the open ocean. You point it at the sun, you read it, you do some math — and you
 learn your position.
 
-A sextant doesn't tell you where to go. It tells you where you are.
+A Argus doesn't tell you where to go. It tells you where you are.
 
-That's exactly the product. Sextant gives you instruments — price, indicators, news,
+That's exactly the product. Argus gives you instruments — price, indicators, news,
 sentiment — and lets you do the navigation yourself. It's a tool for thinking, not a
 shortcut around thinking.
 
@@ -81,12 +81,12 @@ Most "AI crypto" tools promise to predict price. We don't, and we won't. Why:
 - **Shipping "predictions" is a liability.** If a user loses money following a prediction
   feature, that's real harm — and potential legal exposure for whoever shipped it.
 
-So instead of pretending, Sextant ships what's _actually_ useful: tools that show you what's
+So instead of pretending, Argus ships what's _actually_ useful: tools that show you what's
 happening, measured honestly, so you can decide for yourself.
 
 ---
 
-## What Sextant actually does
+## What Argus actually does
 
 | Feature                                     | What it is                                                                                                                | Why it's useful                                                                                   |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -101,13 +101,13 @@ happening, measured honestly, so you can decide for yourself.
 
 ## Architecture
 
-![Sextant architecture](./apps/api/docs/architecture.png)
+![Argus architecture](./apps/api/docs/architecture.png)
 
 **Reading the diagram, top to bottom:**
 
 1. **Web Frontend** — a single-page app using
    [TradingView Lightweight Charts](https://www.tradingview.com/lightweight-charts/) for
-   price rendering. Talks to Sextant only over the HTTP API.
+   price rendering. Talks to Argus only over the HTTP API.
 2. **Axum HTTP Server** — the Rust backend. Exposes endpoints under `/coins`, `/news`,
    `/candles`, `/indicators`. Stateless; all state lives in Postgres.
 3. **Feature modules** — `news`, `prices`, `indicators`, `sentiment`. Each is a self-
@@ -117,7 +117,7 @@ happening, measured honestly, so you can decide for yourself.
    an LLM provider (Groq / OpenAI) for sentiment classification. The indicators module
    is pure local compute — no external dependency.
 5. **Background fetcher** — a tokio task spawned at startup that polls the price APIs
-   every N minutes and writes OHLCV candles to Postgres. This is what gives Sextant
+   every N minutes and writes OHLCV candles to Postgres. This is what gives Argus
    fast chart reads even when the upstream APIs are slow.
 6. **PostgreSQL** — single source of truth for stored candles, fetched articles, computed
    indicator snapshots, and sentiment labels.
@@ -162,8 +162,8 @@ The full dependency list lives in [`Cargo.toml`](./Cargo.toml).
 
 ```bash
 # 1. Clone
-git clone https://github.com/<you>/sextant
-cd sextant
+git clone https://github.com/<you>/Argus
+cd Argus
 
 # 2. Start Postgres in Docker
 docker compose up -d
@@ -184,7 +184,7 @@ You should see:
 ```json
 {
   "status": "ok",
-  "service": "sextant",
+  "service": "Argus",
   "version": "0.1.0",
   "timestamp": "2026-05-15T...",
   "db": "connected"
@@ -354,7 +354,7 @@ exact thing we don't want to be.
 
 ### Adding a new feature module
 
-Sextant uses a flat **feature module** layout. To add a new one (e.g., `alerts`):
+Argus uses a flat **feature module** layout. To add a new one (e.g., `alerts`):
 
 1. Create `src/alerts/mod.rs`, `handler.rs`, `service.rs`.
 2. Expose a `pub fn router() -> Router<AppState>` from `mod.rs`.
@@ -400,14 +400,14 @@ cargo clippy -- -D warnings
 docker compose logs -f postgres                                  # tail Postgres logs
 docker compose down                                              # stop services
 docker compose down -v                                           # stop + wipe data
-docker exec -it sextant-pg psql -U sextant -d sextant            # psql shell
+docker exec -it Argus-pg psql -U Argus -d Argus            # psql shell
 ```
 
 ---
 
 ## Contributing
 
-Sextant is a personal project and contributions are welcome, but **please open an issue
+Argus is a personal project and contributions are welcome, but **please open an issue
 before sending a PR** — especially for anything that touches the prediction-vs-analysis
 line. The product position is opinionated by design.
 
@@ -435,7 +435,7 @@ full text.
 
 ## Disclaimer
 
-**Sextant is not financial advice.** It is an analysis tool that aggregates publicly
+**Argus is not financial advice.** It is an analysis tool that aggregates publicly
 available information and computes standard technical indicators. Nothing it outputs
 constitutes investment advice, a recommendation to buy or sell any asset, or a guarantee
 of future market behaviour. Cryptocurrencies are volatile and risky; you can lose money.
@@ -449,6 +449,6 @@ for any losses incurred by anyone using this software or any output it produces.
 
 <div align="center">
 
-_Sextant doesn't tell you where the market is going.<br>It tells you where it is._
+_Argus doesn't tell you where the market is going.<br>It tells you where it is._
 
 </div>
