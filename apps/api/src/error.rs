@@ -30,6 +30,9 @@ pub enum AppError {
 
     #[error("internal server error")]
     Internal(#[source] anyhow::Error),
+
+    #[error("{0}")]
+    NotFound(String),
 }
 
 impl AppError {
@@ -40,6 +43,7 @@ impl AppError {
             AppError::InvalidRefreshToken => StatusCode::UNAUTHORIZED,
             AppError::EmailTaken => StatusCode::CONFLICT,
             AppError::Internal(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::NotFound(_) => StatusCode::NOT_FOUND,
         }
     }
 }

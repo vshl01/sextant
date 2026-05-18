@@ -10,6 +10,7 @@
 //! Everything else lives in a feature module.
 
 mod auth;
+mod coins;
 mod config;
 mod error;
 mod news;
@@ -30,6 +31,9 @@ use crate::state::AppState;
 // How often the news fetcher polls every RSS source. Kept as a constant for
 // now; promote to `Config` if/when it needs to vary per environment.
 const NEWS_FETCH_INTERVAL: Duration = Duration::from_secs(900);
+
+// Time duration fetch the data for coins Metadata
+const COINS_FETCH_INTERVAL: Duration = Duration::from_secs(6 * 3600);
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -53,12 +57,14 @@ async fn main() -> anyhow::Result<()> {
     // Background workers. The handle is dropped on purpose — the task lives
     // for the process lifetime and we never need to join it.
     news::fetcher::spawn(state.db.clone(), NEWS_FETCH_INTERVAL);
+    coins::fetcher::spawn(state.db.clone(), COINS_FETCH_INTERVAL);
 
     let app = Router::new()
         .route("/health", get(health))
         .merge(auth::router())
         .merge(notes::router())
         .merge(news::router())
+        .merge(coins::router())
         .with_state(state)
         .layer(TraceLayer::new_for_http());
 
