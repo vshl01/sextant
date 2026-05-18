@@ -16,6 +16,8 @@ mod news;
 mod notes;
 mod state;
 
+use std::time::Duration;
+
 use axum::{Json, Router, routing::get};
 use chrono::Utc;
 use serde::Serialize;
@@ -24,6 +26,10 @@ use tower_http::trace::TraceLayer;
 
 use crate::config::Config;
 use crate::state::AppState;
+
+// How often the news fetcher polls every RSS source. Kept as a constant for
+// now; promote to `Config` if/when it needs to vary per environment.
+const NEWS_FETCH_INTERVAL: Duration = Duration::from_secs(900);
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -43,6 +49,10 @@ async fn main() -> anyhow::Result<()> {
 
     let addr = config.server_addr.clone();
     let state = AppState::new(db, config);
+
+    // Background workers. The handle is dropped on purpose — the task lives
+    // for the process lifetime and we never need to join it.
+    news::fetcher::spawn(state.db.clone(), NEWS_FETCH_INTERVAL);
 
     let app = Router::new()
         .route("/health", get(health))
